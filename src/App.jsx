@@ -1,34 +1,64 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [productos, setProductos] = useState([])
+  
+  const [nuevoProducto, setNuevoProducto] = useState('')
+
+  const agregarProducto = () => {
+    if (nuevoProducto.trim() !== '') {
+      setProductos([...productos, nuevoProducto])
+      setNuevoProducto('')
+    }
+  }
+
+  const eliminarProducto = (index) => {
+    const nuevaLista = productos.filter((_, i) => i !== index)
+    setProductos(nuevaLista)
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
+    <div className="App">
+      <div className="container">
+        <h1>Lista de Compras</h1>
+        
+        <div className="input-section">
+          <input
+            type="text"
+            placeholder="Ej: Leche, Pan, Huevos..."
+            value={nuevoProducto}
+            onChange={(e) => setNuevoProducto(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && agregarProducto()}
+          />
+          <button onClick={agregarProducto}>Agregar</button>
+        </div>
+
+        <div className="lista">
+          {productos.length === 0 ? (
+            <p className="lista-vacia">No hay productos en tu lista</p>
+          ) : (
+            <ul>
+              {productos.map((producto, index) => (
+                <li key={index}>
+                  <span>{producto}</span>
+                  <button 
+                    className="btn-eliminar"
+                    onClick={() => eliminarProducto(index)}
+                  >
+                    X
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <p className="contador">
+          Total de productos: {productos.length}
         </p>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </div>
   )
 }
 
